@@ -11,11 +11,33 @@ void init_display(ssd1306_t *ssd,uint8_t endereco,i2c_inst_t *i2c){
   ssd1306_send_data(ssd);
 }
 
-void boas_vindas(ssd1306_t *ssd){
-  ssd1306_draw_string(ssd,"Bem vindo! ; ",4,15); 
-  ssd1306_draw_string(ssd,"0 a 9: matriz",4,25);
-  ssd1306_draw_string(ssd,"Botao A:Verde",4,35);
-  ssd1306_draw_string(ssd,"Botao B:Azul",4,45);
+void limpa_display(ssd1306_t *ssd,bool cor){
+  ssd1306_fill(ssd,!cor); //Limpa display
+  ssd1306_rect(ssd,3,3,122,58,cor,!cor); //Desenha retângulo
+  ssd1306_send_data(ssd); //Atualiza o display
+}
+void mensagem_informativa(ssd1306_t *ssd){
+  ssd1306_draw_string(ssd,"Verde:",4,8); 
+  ssd1306_draw_string(ssd," Fertilizante",4,17);
+  ssd1306_draw_string(ssd,"Azul:",4,27);
+  ssd1306_draw_string(ssd," Irrigacao",4,37);
+  ssd1306_draw_string(ssd,"Rosa: Umidade",4,47);
+  //ssd1306_draw_string(ssd," Umidade",4,57);
+  ssd1306_send_data(ssd); //Atualiza o display
+}
+
+void mensagem_leitura(ssd1306_t *ssd){
+  ssd1306_draw_string(ssd,"Pressione o",4,15); 
+  ssd1306_draw_string(ssd,"joystick para",4,27);
+  ssd1306_draw_string(ssd,"ler dados.",4,37);
+  ssd1306_send_data(ssd); //Atualiza o display
+}
+
+void mensagem_ajuste(ssd1306_t *ssd, char umidade[],char temperatura[]){
+  ssd1306_draw_string(ssd,"Umidade:",4,15); 
+  ssd1306_draw_string(ssd,umidade,80,15);
+  ssd1306_draw_string(ssd,"Temp:",4,37);
+  ssd1306_draw_string(ssd,temperatura,80,37);
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
