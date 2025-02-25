@@ -2,6 +2,8 @@
 #include "font.h"
 
 extern absolute_time_t serial_debounce;
+bool cor=false;
+
 
 void init_display(ssd1306_t *ssd,uint8_t endereco,i2c_inst_t *i2c){
   ssd1306_init(ssd,WIDTH,HEIGHT,false,endereco,i2c);
@@ -9,6 +11,38 @@ void init_display(ssd1306_t *ssd,uint8_t endereco,i2c_inst_t *i2c){
   ssd1306_send_data(ssd);
   ssd1306_fill(ssd, false);
   ssd1306_send_data(ssd);
+}
+
+void mensagem_ajuste(ssd1306_t *ssd){
+  char umidade[5];
+  char temperatura[5];
+
+  sprintf(umidade,"%.1f%%",estufas[indice_menu].umidade_ar);
+  sprintf(temperatura,"%.1fC",estufas[indice_menu].temperatura);
+  limpa_display(ssd,cor);
+  ssd1306_draw_string(ssd,"Umidade:",4,15); 
+  ssd1306_draw_string(ssd,umidade,80,15);
+  ssd1306_draw_string(ssd,"Temp:",4,37);
+  ssd1306_draw_string(ssd,temperatura,80,37);
+  ssd1306_send_data(ssd); //Atualiza o display
+}
+
+
+void desenha_menu(ssd1306_t *ssd){
+  while (menu_estufas)
+  {
+    limpa_display(ssd,cor);
+    if(sub_menu_estufas){
+      mensagem_ajuste(ssd);
+    }else{
+      ssd1306_rect(ssd,7+(20*indice_menu),7,90,14,true,false);
+      ssd1306_draw_string(ssd,"Estufa 1",10,10); 
+      ssd1306_draw_string(ssd,"Estufa 2",10,30);
+      ssd1306_draw_string(ssd,"Estufa 3",10,50);
+      ssd1306_send_data(ssd); //Atualiza o display
+    }
+    sleep_ms(200);
+  }
 }
 
 void limpa_display(ssd1306_t *ssd,bool cor){
@@ -22,7 +56,6 @@ void mensagem_informativa(ssd1306_t *ssd){
   ssd1306_draw_string(ssd,"Azul:",4,27);
   ssd1306_draw_string(ssd," Irrigacao",4,37);
   ssd1306_draw_string(ssd,"Rosa: Umidade",4,47);
-  //ssd1306_draw_string(ssd," Umidade",4,57);
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
@@ -30,14 +63,6 @@ void mensagem_leitura(ssd1306_t *ssd){
   ssd1306_draw_string(ssd,"Pressione o",4,15); 
   ssd1306_draw_string(ssd,"joystick para",4,27);
   ssd1306_draw_string(ssd,"ler dados.",4,37);
-  ssd1306_send_data(ssd); //Atualiza o display
-}
-
-void mensagem_ajuste(ssd1306_t *ssd, char umidade[],char temperatura[]){
-  ssd1306_draw_string(ssd,"Umidade:",4,15); 
-  ssd1306_draw_string(ssd,umidade,80,15);
-  ssd1306_draw_string(ssd,"Temp:",4,37);
-  ssd1306_draw_string(ssd,temperatura,80,37);
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
