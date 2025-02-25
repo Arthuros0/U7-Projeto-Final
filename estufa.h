@@ -1,3 +1,6 @@
+#ifndef ESTUFA_H
+#define ESTUFA_H
+
 #include "pico/stdlib.h"
 #include <stdio.h>
 
@@ -38,5 +41,6 @@ extern estufa estufas[3];
 void atualiza_estado_estufa();
 void imprime_informacoes();
 void simula_clima();
+void alterna_fertirrigacao(estufa *p)
 
-
+#endif

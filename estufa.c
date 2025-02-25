@@ -76,7 +76,7 @@ void simula_clima(){
   }
 }
 
-void alterna_irrigacao(estufa *p){
+void alterna_fertirrigacao(estufa *p){
   if(!p->status_fertilizante){
     p->status_irrigacao=false;
     p->status_fertilizante=true;
