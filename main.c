@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "pico/bootrom.h"
 #include "ssd1306.h"
+#include "estufa.h"
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
