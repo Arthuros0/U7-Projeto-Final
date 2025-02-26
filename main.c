@@ -34,17 +34,22 @@ int main()
     init_button(BUTTON_JOY);
 
     joystick_setup();
+
+    gpio_set_irq_enabled_with_callback(BUTTON_A,GPIO_IRQ_EDGE_FALL,true,&button_callback);
     gpio_set_irq_enabled_with_callback(BUTTON_B,GPIO_IRQ_EDGE_FALL,true,&button_callback);
     gpio_set_irq_enabled_with_callback(BUTTON_JOY,GPIO_IRQ_EDGE_FALL,true,&button_callback);
 
     init_display(&ssd,ENDERECO,I2C_PORT);
 
     button_debounce=delayed_by_ms(get_absolute_time(), 200);
+    debounce_serial=delayed_by_ms(get_absolute_time(), 500);
 
+    add_repeating_timer_ms(3000,simula_clima,NULL,&timer_clima);
 
     while (true) {
         cor=!cor;
         desenha_menu(&ssd);
+        imprime_informacoes();
         sleep_ms(1000);
     }
 }
@@ -59,14 +64,23 @@ void init_button(uint8_t pin){
 void button_callback(uint gpio,uint32_t events){
     if (time_reached(button_debounce)) //Verifica se o tempo de debounce foi atigindo
     {
-        if(gpio == BUTTON_B){
+        if (gpio == BUTTON_A)
+        {
+            printf("Botao A\n");
+            if (sub_menu_estufas || menu_status)
+            {
+                printf("Fertilizante\n");
+                alterna_fertirrigacao(indice_menu);
+            }
+            
+        }else if(gpio == BUTTON_B){
             reset_usb_boot(0, 0);
         }else if(gpio == BUTTON_JOY){
             menu_estufas=!menu_estufas;
             add_alarm_in_ms(100,joy_callback,NULL, false);
-            debounce_joy=delayed_by_ms(get_absolute_time(),200);
+            debounce_joy=delayed_by_ms(get_absolute_time(),250);
         }
-        button_debounce=delayed_by_ms(get_absolute_time(), 200); //Atualiza debounce
+        button_debounce=delayed_by_ms(get_absolute_time(), 250); //Atualiza debounce
     }
 
 }
