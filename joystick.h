@@ -12,6 +12,7 @@
 
 extern bool menu_estufas;
 extern bool sub_menu_estufas;
+extern bool menu_status;
 extern uint8_t indice_menu;
 extern absolute_time_t debounce_joy;
 
