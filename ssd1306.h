@@ -47,9 +47,10 @@ void mensagem_serial(ssd1306_t *ssd);
 void mensagem_caracter(ssd1306_t *ssd,bool cor, char caracter);
 void mensagem_informativa(ssd1306_t *ssd);
 void mensagem_leitura(ssd1306_t *ssd);
-void mensagem_ajuste(ssd1306_t *ssd);
+void mensagem_valores(ssd1306_t *ssd);
 void limpa_display(ssd1306_t *ssd,bool cor);
 void desenha_menu(ssd1306_t *ssd);
+void mensagem_status(ssd1306_t *ssd);
 
 void ssd1306_init(ssd1306_t *ssd, uint8_t width, uint8_t height, bool external_vcc, uint8_t address, i2c_inst_t *i2c);
 void ssd1306_config(ssd1306_t *ssd);

@@ -13,17 +13,32 @@ void init_display(ssd1306_t *ssd,uint8_t endereco,i2c_inst_t *i2c){
   ssd1306_send_data(ssd);
 }
 
-void mensagem_ajuste(ssd1306_t *ssd){
+void mensagem_status(ssd1306_t *ssd){
+  ssd1306_draw_string(ssd,"Aspersor:",4,6); 
+  ssd1306_draw_string(ssd,estufas[indice_menu].status_umidade?"ON":"OFF",95,6);
+  ssd1306_draw_string(ssd,"Irrigacao:",4,18);
+  ssd1306_draw_string(ssd,estufas[indice_menu].status_irrigacao?"ON":"OFF",95,18);
+  ssd1306_draw_string(ssd,"Ventilacao:",4,30);
+  ssd1306_draw_string(ssd,estufas[indice_menu].status_ventilacao?"ON":"OFF",95,30);
+  ssd1306_draw_string(ssd,"Fertirriga:",4,42);
+  ssd1306_draw_string(ssd,estufas[indice_menu].status_irrigacao?"ON":"OFF",95,42);
+  ssd1306_send_data(ssd); //Atualiza o display
+}
+
+void mensagem_valores(ssd1306_t *ssd){
   char umidade[5];
   char temperatura[5];
+  char umidade_solo[5];
 
   sprintf(umidade,"%.1f%%",estufas[indice_menu].umidade_ar);
+  sprintf(umidade_solo,"%.1f%%",estufas[indice_menu].umidade_solo);
   sprintf(temperatura,"%.1fC",estufas[indice_menu].temperatura);
-  limpa_display(ssd,cor);
   ssd1306_draw_string(ssd,"Umidade:",4,15); 
   ssd1306_draw_string(ssd,umidade,80,15);
-  ssd1306_draw_string(ssd,"Temp:",4,37);
-  ssd1306_draw_string(ssd,temperatura,80,37);
+  ssd1306_draw_string(ssd,"Umi.Solo:",4,30);
+  ssd1306_draw_string(ssd,umidade_solo,80,30);
+  ssd1306_draw_string(ssd,"Temp:",4,45);
+  ssd1306_draw_string(ssd,temperatura,80,45);
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
@@ -31,9 +46,12 @@ void mensagem_ajuste(ssd1306_t *ssd){
 void desenha_menu(ssd1306_t *ssd){
   while (menu_estufas)
   {
+    imprime_informacoes();
     limpa_display(ssd,cor);
     if(sub_menu_estufas){
-      mensagem_ajuste(ssd);
+      mensagem_valores(ssd);
+    }else if(menu_status){
+      mensagem_status(ssd);
     }else{
       ssd1306_rect(ssd,7+(20*indice_menu),7,90,14,true,false);
       ssd1306_draw_string(ssd,"Estufa 1",10,10); 
@@ -41,7 +59,7 @@ void desenha_menu(ssd1306_t *ssd){
       ssd1306_draw_string(ssd,"Estufa 3",10,50);
       ssd1306_send_data(ssd); //Atualiza o display
     }
-    sleep_ms(200);
+    sleep_ms(500);
   }
 }
 
@@ -66,16 +84,6 @@ void mensagem_leitura(ssd1306_t *ssd){
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
-bool input_invalido(ssd1306_t *ssd, char c){
-  if(!((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c == ':' || c == ';') || (c == '!') || (c == ' '))){
-    ssd1306_fill(ssd,false); //Limpa display
-    ssd1306_rect(ssd,3,3,122,58,true,false); //Desenha retângulo
-    ssd1306_draw_string(ssd,"Input invalido",6,30);
-    ssd1306_send_data(ssd);
-    return false;
-  }
-  return true;
-}
 
 void mensagem_serial(ssd1306_t *ssd){
   ssd1306_fill(ssd,false); //Limpa display
@@ -84,27 +92,6 @@ void mensagem_serial(ssd1306_t *ssd){
   ssd1306_send_data(ssd);
 }
 
-void mensagem_caracter(ssd1306_t *ssd,bool cor, char caracter){
-  ssd1306_fill(ssd,!cor); //Limpa display
-  ssd1306_rect(ssd,3,3,122,58,cor,!cor); //Desenha retângulo
-  ssd1306_draw_string(ssd,"Caracter: ",8,30); 
-  ssd1306_draw_char(ssd,caracter,90,30); //Imprime o caracter lido
-  ssd1306_send_data(ssd); //Atualiza o display
-}
-
-void uart_comm(ssd1306_t *ssd){
-  if(!stdio_usb_connected()){
-    while(!stdio_usb_connected()){
-      if(time_reached(serial_debounce)){
-        mensagem_serial(ssd);
-        sleep_ms(300);
-      }
-    }
-    ssd1306_fill(ssd,false); //Limpa display
-    ssd1306_rect(ssd,3,3,122,58,true,false); //Desenha retângulo
-    ssd1306_send_data(ssd);
-  }
-}
 
 void init_i2c_pins(uint8_t sda, uint8_t scl){
   gpio_set_function(sda, GPIO_FUNC_I2C);
