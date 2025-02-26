@@ -49,8 +49,7 @@ int main()
     while (true) {
         cor=!cor;
         desenha_menu(&ssd);
-        imprime_informacoes();
-        sleep_ms(1000);
+        sleep_ms(500);
     }
 }
 
