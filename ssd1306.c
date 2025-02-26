@@ -21,7 +21,7 @@ void mensagem_status(ssd1306_t *ssd){
   ssd1306_draw_string(ssd,"Ventilacao:",4,30);
   ssd1306_draw_string(ssd,estufas[indice_menu].status_ventilacao?"ON":"OFF",95,30);
   ssd1306_draw_string(ssd,"Fertirriga:",4,42);
-  ssd1306_draw_string(ssd,estufas[indice_menu].status_irrigacao?"ON":"OFF",95,42);
+  ssd1306_draw_string(ssd,estufas[indice_menu].status_fertilizante?"ON":"OFF",95,42);
   ssd1306_send_data(ssd); //Atualiza o display
 }
 
@@ -44,8 +44,7 @@ void mensagem_valores(ssd1306_t *ssd){
 
 
 void desenha_menu(ssd1306_t *ssd){
-  while (menu_estufas)
-  {
+  if(menu_estufas){
     imprime_informacoes();
     limpa_display(ssd,cor);
     if(sub_menu_estufas){
@@ -59,7 +58,6 @@ void desenha_menu(ssd1306_t *ssd){
       ssd1306_draw_string(ssd,"Estufa 3",10,50);
       ssd1306_send_data(ssd); //Atualiza o display
     }
-    sleep_ms(500);
   }
 }
 
