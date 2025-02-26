@@ -24,6 +24,11 @@
 
 //bool status_alterado=true;
 
+extern struct repeating_timer timer_clima;
+
+extern absolute_time_t debounce_serial;
+
+
 typedef struct estufa
 {
   uint8_t id;
@@ -40,7 +45,7 @@ extern estufa estufas[3];
 
 void atualiza_estado_estufa();
 void imprime_informacoes();
-void simula_clima();
-void alterna_fertirrigacao(estufa *p)
+bool simula_clima(struct repeating_timer *t);
+void alterna_fertirrigacao(uint8_t i);
 
 #endif
