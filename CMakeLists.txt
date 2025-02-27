@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Projeto_final main.c ssd1306.c estufa.c joystick.c)
+add_executable(Projeto_final main.c ssd1306.c estufa.c joystick.c matrix_leds.c)
 
 pico_set_program_name(Projeto_final "Projeto_final")
 pico_set_program_version(Projeto_final "0.1")
@@ -44,11 +44,15 @@ pico_set_program_version(Projeto_final "0.1")
 pico_enable_stdio_uart(Projeto_final 1)
 pico_enable_stdio_usb(Projeto_final 1)
 
+pico_generate_pio_header(Projeto_final ${CMAKE_CURRENT_LIST_DIR}/pio_matrix.pio)
+
 # Add the standard library to the build
 target_link_libraries(Projeto_final
         pico_stdlib
         hardware_i2c
-        hardware_adc)
+        hardware_adc
+        hardware_pio
+        hardware_clocks)
 
 # Add the standard include files to the build
 target_include_directories(Projeto_final PRIVATE
