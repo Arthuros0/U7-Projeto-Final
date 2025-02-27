@@ -4,6 +4,7 @@
 #include "ssd1306.h"
 #include "estufa.h"
 #include "joystick.h"
+#include "matrix_leds.h"
 
 #define I2C_PORT i2c1
 #define I2C_SDA 14
@@ -26,8 +27,10 @@ int main()
 {
     stdio_init_all();
 
-    i2c_init(I2C_PORT,400*1000);
+    i2c_init(I2C_PORT,400*5000);
     init_i2c_pins(I2C_SDA,I2C_SCL);
+
+    setup_led_matrix();
 
     init_button(BUTTON_A);
     init_button(BUTTON_B);
@@ -44,11 +47,21 @@ int main()
     button_debounce=delayed_by_ms(get_absolute_time(), 200);
     debounce_serial=delayed_by_ms(get_absolute_time(), 500);
 
-    add_repeating_timer_ms(3000,simula_clima,NULL,&timer_clima);
+    init_estufas();
+
+    ssd1306_draw_bitmap(&ssd,bitmap_estufa);
+    while (!menu_estufas)
+    {
+        sleep_ms(200);
+    }
+
+    add_repeating_timer_ms(4000,simula_clima,NULL,&timer_clima);
 
     while (true) {
         cor=!cor;
+        if(!menu_estufas)ssd1306_draw_bitmap(&ssd,bitmap_estufa);
         desenha_menu(&ssd);
+        desenha_status();
         sleep_ms(500);
     }
 }
